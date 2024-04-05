@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Chat</title>
+  <style>
+    #chatMessages {
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>WebSocket Client</h1>
+  <div id="chatMessages"></div>
+  <script>
+    var ws = new WebSocket("ws://localhost:8004/ws/");
+
+    ws.onmessage = function (event) {
+      var chatMessages = document.getElementById("chatMessages");
+      try {
+        var data = JSON.parse(event.data);
+        var prettyData = JSON.stringify(data, null, 2);
+        chatMessages.textContent = prettyData;
+      } catch (e) {
+        console.log(e);
+        chatMessages.textContent = event.data;
+      }
+    };
+  </script>
+</body>
+
+</html>

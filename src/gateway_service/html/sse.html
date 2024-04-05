@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chat</title>
+    <style>
+        #chatMessages {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>SSE Client</h1>
+    <div id="chatMessages"></div>
+    <script>
+        const evtSource = new EventSource("http://localhost:8004/sse/");
+
+        evtSource.addEventListener("product_update", function (event) {
+            var chatMessages = document.getElementById("chatMessages");
+            try {
+                var data = JSON.parse(event.data);
+                var prettyData = JSON.stringify(data, null, 2);
+                chatMessages.textContent = prettyData;
+            } catch (e) {
+                console.log(e);
+                chatMessages.textContent = event.data;
+            }
+        });
+
+        evtSource.onerror = function (event) {
+            console.log(event);
+        }
+    </script>
+</body>
+
+</html>

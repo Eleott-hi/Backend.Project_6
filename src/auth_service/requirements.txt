@@ -1,0 +1,14 @@
+sqlmodel
+psycopg2
+python-dotenv
+pytest
+pydantic-extra-types
+pydantic[email]
+phonenumbers
+sqlalchemy
+sqlalchemy-utils
+passlib
+pyjwt
+asyncpg
+grpcio
+grpcio-tools
