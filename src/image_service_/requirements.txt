@@ -1,0 +1,14 @@
+fastapi[all]
+sqlmodel
+psycopg2
+python-dotenv
+httpx
+pytest
+pydantic-extra-types
+pydantic[email]
+phonenumbers
+opyoid
+grpcio 
+grpcio-tools
+redis
+sqlalchemy-utils

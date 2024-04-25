@@ -19,25 +19,25 @@ services:
     ports:
        - "6379:6379"
 
-  zookeeper:
-    image: wurstmeister/zookeeper
-    restart: on-failure
-    ports:
-      - 2181:2181
+  # zookeeper:
+  #   image: wurstmeister/zookeeper
+  #   restart: on-failure
+  #   ports:
+  #     - 2181:2181
 
-  kafka:
-    image: confluentinc/cp-kafka
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 
-    restart: on-failure
-    depends_on:
-      - zookeeper
-    ports:
-      - 9092:9092
+  # kafka:
+  #   image: confluentinc/cp-kafka
+  #   environment:
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 
+  #   restart: on-failure
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - 9092:9092
 
   # pgadmin:
   #   image: dpage/pgadmin4
@@ -83,22 +83,22 @@ services:
     ports:
       - 8000:8000
 
-  generator_service:
-    build: ./generator_service
-    container_name: generator_service
-    working_dir: /app
-    volumes:
-      - ./generator_service:/app
-    command: bash -c "make"
-    ports:
-      - 8003:8000
+  # generator_service:
+  #   build: ./generator_service
+  #   container_name: generator_service
+  #   working_dir: /app
+  #   volumes:
+  #     - ./generator_service:/app
+  #   command: bash -c "make"
+  #   ports:
+  #     - 8003:8000
 
-  gateway_service:
-    build: ./gateway_service
-    container_name: gateway_service
-    working_dir: /app
-    volumes:
-      - ./gateway_service:/app
-    command: bash -c "make"
-    ports:
-      - 8004:8000
+  # gateway_service:
+  #   build: ./gateway_service
+  #   container_name: gateway_service
+  #   working_dir: /app
+  #   volumes:
+  #     - ./gateway_service:/app
+  #   command: bash -c "make"
+  #   ports:
+  #     - 8004:8000
