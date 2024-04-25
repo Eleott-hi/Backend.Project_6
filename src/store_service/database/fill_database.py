@@ -1,5 +1,5 @@
 
-from database.models.models import Image, Product
+from database.models.models import  Product
 from sqlmodel import Session, select
 
 
@@ -15,21 +15,21 @@ products = [
         category="Category 1",
         price=10,
         available_stock=100,
-        image=get_image(1),
+        # image=get_image(1),
     ),
     Product(
         name="Product 2",
         category="Category 2",
         price=20,
         available_stock=200,
-        image=get_image(2),
+        # image=get_image(2),
     ),
     Product(
         name="Product 3",
         category="Category 3",
         price=30,
         available_stock=300,
-        image=get_image(3),
+        # image=get_image(3),
     ),
 ]
 

@@ -28,14 +28,6 @@ class Supplier(SQLModel, table=True):
         back_populates="supplier", sa_relationship_kwargs={"cascade": "delete"}
     )
 
-
-class Image(SQLModel, table=True):
-    id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
-    image: bytes
-
-    product: Optional["Product"] = Relationship(back_populates="image")
-
-
 class Product(SQLModel, table=True):
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(unique=True)
@@ -44,9 +36,11 @@ class Product(SQLModel, table=True):
     available_stock: int
     last_update_date: datetime = Field(default=datetime.now())
     supplier_id: Optional[UUID] = Field(default=None, foreign_key="supplier.id")
-    image_id: Optional[UUID] = Field(default=None, foreign_key="image.id")
+    image_id: Optional[UUID] = Field(default=None
+    # , foreign_key="image.id"
+    )
 
-    image: Optional[Image] = Relationship(back_populates="product")
+    # image: Optional[Image] = Relationship(back_populates="product")
     supplier: Optional[Supplier] = Relationship(back_populates="products")
 
 

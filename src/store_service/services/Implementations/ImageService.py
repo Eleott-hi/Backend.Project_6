@@ -1,4 +1,4 @@
-from database.models.models import Image
+from database.models.image import Image
 from uuid import UUID
 from services.Interfaces.IImageService import IImageService
 from repositories.Interfaces.IImageRepository import IImageRepository

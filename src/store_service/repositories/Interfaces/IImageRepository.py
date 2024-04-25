@@ -1,7 +1,7 @@
 import abc
 from typing import List
 from uuid import UUID
-from database.models.models import Image
+from database.models.image import Image
 
 
 class IImageRepository(abc.ABC):
