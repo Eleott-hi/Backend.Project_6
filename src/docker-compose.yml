@@ -6,50 +6,49 @@ services:
     container_name: postgres_service
     environment:
       POSTGRES_PASSWORD: postgres
-      POSTGRES_MULTIPLE_DATABASES: postgres,image_db_1,image_db_2,image_db_3,image_db_4
     volumes:
       - ./postgres_service:/docker-entrypoint-initdb.d
     restart: on-failure
     ports:
       - 5432:5432
 
-  # redis_service:
-  #   image: redis:latest
-  #   container_name: redis_service
-  #   restart: on-failure
-  #   ports:
-  #      - "6379:6379"
+  redis_service:
+    image: redis:latest
+    container_name: redis_service
+    restart: on-failure
+    ports:
+       - "6379:6379"
 
-  # zookeeper:
-  #   image: wurstmeister/zookeeper
-  #   restart: on-failure
-  #   ports:
-  #     - 2181:2181
+  zookeeper:
+    image: wurstmeister/zookeeper
+    restart: on-failure
+    ports:
+      - 2181:2181
 
-  # kafka:
-  #   image: confluentinc/cp-kafka
+  kafka:
+    image: confluentinc/cp-kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 
+    restart: on-failure
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
   #   environment:
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 
+  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: adminpassword
+  #     PGADMIN_LISTEN_PORT: 5050
   #   restart: on-failure
-  #   depends_on:
-  #     - zookeeper
   #   ports:
-  #     - 9092:9092
-
-  # # pgadmin:
-  # #   image: dpage/pgadmin4
-  # #   container_name: pgadmin
-  # #   environment:
-  # #     PGADMIN_DEFAULT_EMAIL: admin@example.com
-  # #     PGADMIN_DEFAULT_PASSWORD: adminpassword
-  # #     PGADMIN_LISTEN_PORT: 5050
-  # #   restart: on-failure
-  # #   ports:
-  # #     - 5050:5050
+  #     - 5050:5050
 
   # adminer:
   #   image: adminer
@@ -58,76 +57,48 @@ services:
   #   ports:
   #     - 8080:8080
 
-  # auth_service:
-  #   build: ./auth_service
-  #   container_name: auth_service
-  #   working_dir: /app
-  #   volumes:
-  #     - ./auth_service:/app
-  #   command: bash -c "make"
-  #   environment:
-  #     DB_USER: "postgres"
-  #     DB_PASSWORD: "postgres"
-  #   restart: on-failure
-  #   ports:
-  #     - 50051:50051
+  auth_service:
+    build: ./auth_service
+    container_name: auth_service
+    working_dir: /app
+    volumes:
+      - ./auth_service:/app
+    command: bash -c "make"
+    environment:
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+    restart: on-failure
+    ports:
+      - 50051:50051
 
-  # store_service_1:
-  #   build: ./store_service
-  #   container_name: store_service_1
-  #   working_dir: /app
-  #   volumes:
-  #     - ./store_service:/app
-  #   command: bash -c "make"
-  #   env_file:
-  #     - ./store_service/.env
-  #   ports:
-  #     - 8000:8000
+  store_service_1:
+    build: ./store_service
+    container_name: store_service_1
+    working_dir: /app
+    volumes:
+      - ./store_service:/app
+    command: bash -c "make"
+    env_file:
+      - ./store_service/.env
+    ports:
+      - 8000:8000
 
-  # store_service_2:
-  #   container_name: store_service_2
-  #   extends:
-  #     service: store_service
-  #   environment:
-  #     DB_USER: "readonly_user"
-  #     DB_PASSWORD: "1"
-  #   command: bash -c "sleep 5; pip install -r requirements.txt; python3 main.py"
+  generator_service:
+    build: ./generator_service
+    container_name: generator_service
+    working_dir: /app
+    volumes:
+      - ./generator_service:/app
+    command: bash -c "make"
+    ports:
+      - 8003:8000
 
-  # store_service_3:
-  #   container_name: store_service_3
-  #   extends:
-  #     service: store_service_2
-
-  # generator_service:
-  #   build: ./generator_service
-  #   container_name: generator_service
-  #   working_dir: /app
-  #   volumes:
-  #     - ./generator_service:/app
-  #   command: bash -c "make"
-  #   ports:
-  #     - 8003:8000
-
-  # gateway_service:
-  #   build: ./gateway_service
-  #   container_name: gateway_service
-  #   working_dir: /app
-  #   volumes:
-  #     - ./gateway_service:/app
-  #   command: bash -c "make"
-  #   ports:
-  #     - 8004:8000
-
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   restart: always
-  #   ports:
-  #     - 443:443
-  #   volumes:
-  #     - ./nginx/statics/:/var/www/
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./nginx/ssl/:/etc/nginx/ssl
-  #   depends_on:
-  #     - pgadmin
-  #     - fastapi_1
+  gateway_service:
+    build: ./gateway_service
+    container_name: gateway_service
+    working_dir: /app
+    volumes:
+      - ./gateway_service:/app
+    command: bash -c "make"
+    ports:
+      - 8004:8000

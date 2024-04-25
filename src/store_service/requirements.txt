@@ -11,3 +11,4 @@ opyoid
 grpcio 
 grpcio-tools
 redis
+sqlalchemy-utils
