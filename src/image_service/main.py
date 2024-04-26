@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 # from routers.ClientRouter import ClientRouter
 # from routers.ProductRouter import ProductRouter
 # from routers.SupplierRouter import SupplierRouter
-from image_service.routers.ImageRouter import router as image_router
+from routers.ImageRouter import router as image_router
 
 from contextlib import asynccontextmanager
 # from routers.AuthRouter import AuthRouter
@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    database.init_db()
+    await database.init_db()
     yield
 
 

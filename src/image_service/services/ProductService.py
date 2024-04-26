@@ -1,7 +1,7 @@
 from uuid import UUID
 import httpx
 from config import STORE_SERVICE, STORE_SERVICE_VERSION
-from shemas import Product
+from schemas.Product import Product
 from fastapi import status
 from fastapi.exceptions import HTTPException
 

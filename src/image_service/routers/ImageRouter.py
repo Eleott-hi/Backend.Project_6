@@ -81,7 +81,7 @@ async def upload_image(image: bytes = File(...), product_id: UUID = Form(...)) -
     status_code=status.HTTP_204_NO_CONTENT,
     responses={404: {"description": "Item not found"}},
 )
-async def update_image(id: UUID, image: bytes = File(...)) -> str:
+async def update_image(id: UUID, image: bytes = File(...)) -> None:
     """
     Update an existing image.
 
@@ -100,7 +100,7 @@ async def update_image(id: UUID, image: bytes = File(...)) -> str:
     status_code=status.HTTP_204_NO_CONTENT,
     responses={404: {"description": "Item not found"}},
 )
-async def delete_image(id: UUID) -> str:
+async def delete_image(id: UUID) -> None:
     """
     Delete an image by its ID.
 

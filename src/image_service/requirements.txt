@@ -2,7 +2,7 @@ fastapi[all]
 sqlalchemy
 sqlalchemy-utils
 sqlmodel
-psycopg2
+psycopg2-binary
 asyncpg
 httpx
 pytest

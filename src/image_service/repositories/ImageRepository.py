@@ -8,15 +8,9 @@ from fastapi import Depends
 
 class ImageRepository:
     async def get_image(id: UUID) -> Image:
-        try:
-            async with get_session(id=id) as session:
-                image = await session.get(Image, id)
-                return image
-
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"Image not found: {e}"
-            )
+        async with get_session(id=id) as session:
+            image = await session.get(Image, id)
+            return image
 
     async def create_image(image: bytes) -> Image:
         image = Image(id=uuid4(), image=image)
