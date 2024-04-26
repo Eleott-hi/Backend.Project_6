@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 # from routers.ClientRouter import ClientRouter
 # from routers.ProductRouter import ProductRouter
 # from routers.SupplierRouter import SupplierRouter
-from image_service.routers.ImageRouter import ImageRouter
+from image_service.routers.ImageRouter import router as image_router
 
 from contextlib import asynccontextmanager
 # from routers.AuthRouter import AuthRouter
@@ -22,24 +22,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    title="My cool api",
-    description="Some description",
+    title="Image service",
+    description="Image storage server in sharding databases",
     version="1.0.0",
-    docs_url="/",
-    openapi_url="/openapi.json",
     root_path="/api/v1",
 )
 
-app.add_middleware(
-    BaseHTTPMiddleware,
-    dispatch=middleware_get_token_from_cookies,
-)
+app.include_router(image_router)
 
-app.include_router(injector.inject(ClientRouter).router)
-app.include_router(injector.inject(ProductRouter).router)
-app.include_router(injector.inject(SupplierRouter).router)
-app.include_router(injector.inject(ImageRouter).router)
-app.include_router(AuthRouter().router)
+# app.add_middleware(
+#     BaseHTTPMiddleware,
+#     dispatch=middleware_get_token_from_cookies,
+# )
+
 
 
 if __name__ == "__main__":

@@ -1,8 +1,14 @@
 from fastapi import APIRouter, status, File, Form, Response, Depends
-from services.JWTBearer import JWTBearer
+from database.models.image import Image
+from schemas.Product import Product
+from services.ProductService import ProductService
+from fastapi.exceptions import HTTPException
+
+# from services.JWTBearer import JWTBearer
 from uuid import UUID
-from services.Interfaces.IImageService import IImageService
-from database.database import Session, get_session
+
+# from database.database import Session, get_session
+from repositories.ImageRepository import ImageRepository
 
 
 router = APIRouter(
@@ -13,9 +19,7 @@ router = APIRouter(
 
 
 @router.get("/{id}", responses={404: {"description": "Item not found"}})
-async def get_image_by_id(
-    id: UUID,
-) -> Response:
+async def get_image_by_id(id: UUID) -> Response:
     """
     Retrieve an image by its ID.
 
@@ -24,7 +28,8 @@ async def get_image_by_id(
     Returns:
     - Response object with the image content.
     """
-    res: bytes = await service.one(id)
+    image: Image = await ImageRepository.get_image(id)
+    res: bytes = image.image
     return Response(content=res, media_type="application/octet-stream")
 
 
@@ -41,7 +46,16 @@ async def get_image_by_product_id(product_id: UUID) -> Response:
     Returns:
     - Response object with the image content.
     """
-    res = await service.one_by_product_id(product_id)
+    product: Product = ProductService.get_product(product_id)
+
+    if product.image_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Product has no image"
+        )
+
+    image: Image = await ImageRepository.get_image(product.image_id)
+    res: bytes = image.image
+
     return Response(content=res, media_type="application/octet-stream")
 
 
@@ -56,13 +70,15 @@ async def upload_image(image: bytes = File(...), product_id: UUID = Form(...)) -
     Returns:
     - UUID of the uploaded image.
     """
-    res: UUID = await service.create(image, product_id)
-    return res
+    image: Image = ImageRepository.create_image(image=image)
+    ProductService.set_image_id_to_product(product_id, image.id)
+
+    return image.id
 
 
 @router.put(
     "/{id}",
-    status_code=status.HTTP_202_ACCEPTED,
+    status_code=status.HTTP_204_NO_CONTENT,
     responses={404: {"description": "Item not found"}},
 )
 async def update_image(id: UUID, image: bytes = File(...)) -> str:
@@ -73,13 +89,17 @@ async def update_image(id: UUID, image: bytes = File(...)) -> str:
     - `image`: Bytes. Binary data of the updated image file.
 
     Returns:
-    - Success message.
+    - NO RETURN
     """
-    res = await service.update(id, image)
-    return res
+
+    ImageRepository.update_image(id, image)
 
 
-@router.delete("/{id}", responses={404: {"description": "Item not found"}})
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={404: {"description": "Item not found"}},
+)
 async def delete_image(id: UUID) -> str:
     """
     Delete an image by its ID.
@@ -87,7 +107,6 @@ async def delete_image(id: UUID) -> str:
     - `id`: UUID. ID of the image to delete.
 
     Returns:
-    - Success message.
+    - NO RETURN
     """
-    res = await service.delete(id)
-    return res
+    ImageRepository.delete_image(id)

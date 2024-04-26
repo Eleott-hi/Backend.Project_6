@@ -32,7 +32,7 @@ async def init_db():
     print("Finish Initializing database models", flush=True)
 
 
-async def get_session(id: UUID):
+async def get_session(id: UUID) -> AsyncSession:
     shradding = {
         "0123": async_session_1,
         "4567": async_session_2,
