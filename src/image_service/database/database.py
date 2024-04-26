@@ -4,6 +4,7 @@ from sqlmodel import SQLModel, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 from config import IMAGE_DB_1, IMAGE_DB_2, IMAGE_DB_3, IMAGE_DB_4
 from fastapi import HTTPException
 from fastapi.staus import HTTP_404_NOT_FOUND
@@ -32,7 +33,7 @@ async def init_db():
 
 
 async def get_session(id: UUID):
-    mapper = {
+    shradding = {
         "0123": async_session_1,
         "4567": async_session_2,
         "89ab": async_session_3,
@@ -41,7 +42,7 @@ async def get_session(id: UUID):
 
     ch = str(id)[0]
 
-    for k, session in mapper.items():
+    for k, session in shradding.items():
         if ch in k:
             async with session() as s:
                 yield s

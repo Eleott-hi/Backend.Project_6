@@ -2,8 +2,7 @@ from fastapi import APIRouter, status, File, Form, Response, Depends
 from services.JWTBearer import JWTBearer
 from uuid import UUID
 from services.Interfaces.IImageService import IImageService
-from database.database import Session
-from repositories
+from database.database import Session, get_session
 
 
 router = APIRouter(
@@ -14,7 +13,9 @@ router = APIRouter(
 
 
 @router.get("/{id}", responses={404: {"description": "Item not found"}})
-async def get_image_by_id(id: UUID, session: Session = Depends()) -> Response:
+async def get_image_by_id(
+    id: UUID,
+) -> Response:
     """
     Retrieve an image by its ID.
 
@@ -23,7 +24,7 @@ async def get_image_by_id(id: UUID, session: Session = Depends()) -> Response:
     Returns:
     - Response object with the image content.
     """
-    res: bytes = await self.service.one(id)
+    res: bytes = await service.one(id)
     return Response(content=res, media_type="application/octet-stream")
 
 
@@ -40,7 +41,7 @@ async def get_image_by_product_id(product_id: UUID) -> Response:
     Returns:
     - Response object with the image content.
     """
-    res = await self.service.one_by_product_id(product_id)
+    res = await service.one_by_product_id(product_id)
     return Response(content=res, media_type="application/octet-stream")
 
 
@@ -55,7 +56,7 @@ async def upload_image(image: bytes = File(...), product_id: UUID = Form(...)) -
     Returns:
     - UUID of the uploaded image.
     """
-    res: UUID = await self.service.create(image, product_id)
+    res: UUID = await service.create(image, product_id)
     return res
 
 
@@ -74,7 +75,7 @@ async def update_image(id: UUID, image: bytes = File(...)) -> str:
     Returns:
     - Success message.
     """
-    res = await self.service.update(id, image)
+    res = await service.update(id, image)
     return res
 
 
@@ -88,5 +89,5 @@ async def delete_image(id: UUID) -> str:
     Returns:
     - Success message.
     """
-    res = await self.service.delete(id)
+    res = await service.delete(id)
     return res
