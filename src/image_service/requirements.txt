@@ -12,3 +12,4 @@ grpcio
 grpcio-tools
 redis
 py-singleton
+alembic

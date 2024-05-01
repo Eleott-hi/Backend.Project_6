@@ -21,8 +21,6 @@ from repositories.Implementations.SupplierRepository import SupplierRepository
 from routers.ImageRouter import ImageRouter
 from services.Interfaces.IImageService import IImageService
 from services.Implementations.ImageService import ImageService
-from repositories.Interfaces.IImageRepository import IImageRepository
-from repositories.Implementations.ImageRepository import ImageRepository
 
 
 class InjectionModule(Module):
@@ -30,7 +28,6 @@ class InjectionModule(Module):
         self.bind(IClientRepository, to_class=ClientRepository)
         self.bind(IProductRepository, to_class=ProductRepository)
         self.bind(ISupplierRepository, to_class=SupplierRepository)
-        self.bind(IImageRepository, to_class=ImageRepository)
   
         self.bind(IClientService, to_class=ClientService)
         self.bind(IProductService, to_class=ProductService)

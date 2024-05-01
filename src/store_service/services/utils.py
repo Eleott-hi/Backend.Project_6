@@ -1,7 +1,15 @@
 import grpc
 from config import AUTH_SERVICE
 import proto.auth.auth_pb2_grpc as auth_pb2_grpc
-from fastapi import status,  HTTPException
+from fastapi import status, HTTPException
+import httpx
+
+
+def get_upstream_fastapi_http_exception(response: httpx.Response):
+    return HTTPException(
+        status_code=response.status_code,
+        detail=response.json()["detail"],
+    )
 
 
 def handle_grpc_exceptions(e: grpc.RpcError):
@@ -26,7 +34,7 @@ def handle_grpc_exceptions(e: grpc.RpcError):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=e.details(),
             )
-        case  grpc.StatusCode.ALREADY_EXISTS:
+        case grpc.StatusCode.ALREADY_EXISTS:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail=e.details(),

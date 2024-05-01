@@ -1,16 +1,12 @@
 import database.models.models as models
-import database.models.image as image
-from sqlmodel import SQLModel, create_engine, Session
-from config import DB_URL, IMAGE_DB_1, IMAGE_DB_2, IMAGE_DB_3, IMAGE_DB_4
+from sqlmodel import SQLModel, create_engine, Session, select
+from sqlalchemy.orm import load_only
+from config import DB_URL
 from database.fill_database import fill_database
 from sqlalchemy_utils import database_exists, create_database
 
 
 engine = create_engine(DB_URL, echo=True)
-img_engine_1 = create_engine(IMAGE_DB_1, echo=True)
-img_engine_2 = create_engine(IMAGE_DB_2, echo=True)
-img_engine_3 = create_engine(IMAGE_DB_3, echo=True)
-img_engine_4 = create_engine(IMAGE_DB_4, echo=True)
 
 
 def create_db(engine, tables):
@@ -33,11 +29,6 @@ def init_db():
             models.Client.__table__,
         ],
     )
-
-    create_db(img_engine_1, tables=[image.Image.__table__])
-    create_db(img_engine_2, tables=[image.Image.__table__])
-    create_db(img_engine_3, tables=[image.Image.__table__])
-    create_db(img_engine_4, tables=[image.Image.__table__])
 
     print("Fill database models")
     fill_database(engine)

@@ -72,17 +72,17 @@ services:
   #     - 50051:50051
 
 
-  # store_service_1:
-  #   build: ./store_service
-  #   container_name: store_service_1
-  #   working_dir: /app
-  #   volumes:
-  #     - ./store_service:/app
-  #   command: bash -c "make"
-  #   env_file:
-  #     - ./store_service/.env
-  #   ports:
-  #     - 8000:8000
+  store_service_1:
+    build: ./store_service
+    container_name: store_service_1
+    working_dir: /app
+    volumes:
+      - ./store_service:/app
+    command: bash -c "make"
+    env_file:
+      - ./store_service/.env
+    ports:
+      - 8000:8000
 
 
   image_service:

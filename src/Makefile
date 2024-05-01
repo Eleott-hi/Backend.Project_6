@@ -18,3 +18,6 @@ copy_proto:
 
 prune:
 	docker system prune -a
+
+sed:
+	find . -type f -name "*.sh" -exec sed -i 's/\r//g' {} +
